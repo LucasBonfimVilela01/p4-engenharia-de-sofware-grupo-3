@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Efetuar Pedido</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; line-height: 1.6; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        select, input { padding: 8px; width: 100%; max-width: 400px; margin-top: 5px; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        .error { color: red; background-color: #ffe6e6; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <h2>Finalizar Pedido</h2>
+
+    <div th:if="${erro}" class="error">
+        <p th:text="${erro}"></p>
+    </div>
+
+    <div class="card">
+        <h3>1. Dados do Cliente</h3>
+        <p><strong>Cliente:</strong> <span th:text="${cliente.nome}" ></span></p>
+        <p><strong>CPF:</strong> <span th:text="${cliente.CPF}" ></span></p>
+        <p><strong>CEP de Entrega:</strong> <span th:text="${cliente.enderecos[0].cep}"></span></p>
+    </div>
+
+    <div class="card">
+        <h3>2. Itens do Pedido</h3>
+        <ul>
+            <li th:each="livro : ${carrinho.livros}">
+                <span th:text="${livro.titulo != null ? livro.titulo : 'Livro sem título'}"></span> -
+                Preço Base: R$ <span th:text="${livro.preco}"></span> |
+                Com desconto de formato (RN02): R$ <span th:text="${livro.precoComDesconto}"></span>
+            </li>
+        </ul>
+        <p><strong>Subtotal do Carrinho:</strong> R$ <span th:text="${carrinho.valorCarrinho}"></span></p>
+    </div>
+
+    <form th:action="@{/checkout/efetuar}" method="post" class="card">
+        <h3>3. Configurações da Compra</h3>
+
+        <label for="tipoFrete">Modalidade de Frete:</label>
+        <select id="tipoFrete" name="tipoFrete">
+            <option value="NORMAL">Entrega Normal (R$ 15.00 - 7 dias)</option>
+            <option value="EXPRESSA">Entrega Expressa (R$ 30.00 - 2 dias)</option>
+        </select>
+
+        <label for="tipoPagamento">Forma de Pagamento (RN04):</label>
+        <select id="tipoPagamento" name="tipoPagamento">
+            <option value="PIX">PIX (8% de Desconto à Vista)</option>
+            <option value="CARTAO">Cartão de Crédito (3% à Vista ou até 3x sem juros)</option>
+        </select>
+
+        <label for="parcelas">Número de Parcelas (se Cartão):</label>
+        <input type="number" id="parcelas" name="parcelas" value="1" min="1" max="3">
+
+        <label for="statusSimulado">Simulação de Resposta da API de Pagamento:</label>
+        <select id="statusSimulado" name="statusSimulado">
+            <option value="APROVADO">Aprovado (Sucesso -> Status CONFIRMADO e Baixa no Estoque)</option>
+            <option value="RECUSADO">Recusado (Exceção 14a -> Status CANCELADO)</option>
+            <option value="TIMEOUT">Timeout / Sem Resposta (Exceção 14b -> Status EM_PROCESSAMENTO)</option>
+        </select>
+
+        <button type="submit">Confirmar e Efetuar Pedido</button>
+    </form>
+
+    </body>
+    </html>

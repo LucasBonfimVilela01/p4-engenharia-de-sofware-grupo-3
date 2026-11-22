@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado do Pedido</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .badge { padding: 6px 12px; border-radius: 4px; color: white; font-weight: bold; }
+        .CONFIRMADO { background-color: #28a745; }
+        .CANCELADO { background-color: #dc3545; }
+        .EM_PROCESSAMENTO { background-color: #ffc107; color: black; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; max-width: 500px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Resumo do Processamento</h2>
+
+    <p><strong>Status do Pedido:</strong>
+        <span th:text="${pedido.status}" th:class="'badge ' + ${pedido.status}"></span>
+    </p>
+
+    <p><strong>Cliente:</strong> <span th:text="${pedido.cliente.nome}"></span></p>
+    <p><strong>Valor Total Processado:</strong> R$ <span th:text="${pedido.valorPedido}"></span></p>
+
+    <br>
+    <a href="/checkout">Voltar para o Checkout</a>
+</div>
+
+</body>
+</html>
